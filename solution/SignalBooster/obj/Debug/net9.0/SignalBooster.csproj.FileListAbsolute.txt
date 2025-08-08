@@ -1,0 +1,14 @@
+C:\Users\sw_mi\source\repos\synapse-health\solution\SignalBooster\bin\Debug\net9.0\SignalBooster.exe
+C:\Users\sw_mi\source\repos\synapse-health\solution\SignalBooster\bin\Debug\net9.0\SignalBooster.deps.json
+C:\Users\sw_mi\source\repos\synapse-health\solution\SignalBooster\bin\Debug\net9.0\SignalBooster.runtimeconfig.json
+C:\Users\sw_mi\source\repos\synapse-health\solution\SignalBooster\bin\Debug\net9.0\SignalBooster.dll
+C:\Users\sw_mi\source\repos\synapse-health\solution\SignalBooster\bin\Debug\net9.0\SignalBooster.pdb
+C:\Users\sw_mi\source\repos\synapse-health\solution\SignalBooster\obj\Debug\net9.0\SignalBooster.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\sw_mi\source\repos\synapse-health\solution\SignalBooster\obj\Debug\net9.0\SignalBooster.AssemblyInfoInputs.cache
+C:\Users\sw_mi\source\repos\synapse-health\solution\SignalBooster\obj\Debug\net9.0\SignalBooster.AssemblyInfo.cs
+C:\Users\sw_mi\source\repos\synapse-health\solution\SignalBooster\obj\Debug\net9.0\SignalBooster.csproj.CoreCompileInputs.cache
+C:\Users\sw_mi\source\repos\synapse-health\solution\SignalBooster\obj\Debug\net9.0\SignalBooster.dll
+C:\Users\sw_mi\source\repos\synapse-health\solution\SignalBooster\obj\Debug\net9.0\refint\SignalBooster.dll
+C:\Users\sw_mi\source\repos\synapse-health\solution\SignalBooster\obj\Debug\net9.0\SignalBooster.pdb
+C:\Users\sw_mi\source\repos\synapse-health\solution\SignalBooster\obj\Debug\net9.0\SignalBooster.genruntimeconfig.cache
+C:\Users\sw_mi\source\repos\synapse-health\solution\SignalBooster\obj\Debug\net9.0\ref\SignalBooster.dll
