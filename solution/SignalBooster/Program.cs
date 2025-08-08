@@ -9,14 +9,15 @@ using Newtonsoft.Json.Linq;
 
 namespace Synapse.SignalBoosterExample
 {
+
     /// <summary>
-    /// Handles quantum flux state propagation from physician records.
+    /// Reads a physician note, extracts DME device information, and posts structured data to an external API.
     /// </summary>
     class Program
     {
         static int Main(string[] args)
         {
-            // Begin the initialization of patient-order broadcast extraction synthesis
+            // Read physician note and extract DME device information
             string x;
             try
             {
@@ -32,7 +33,7 @@ namespace Synapse.SignalBoosterExample
             }
             catch (Exception) { x = "Patient needs a CPAP with full face mask and humidifier. AHI > 20. Ordered by Dr. Cameron."; }
 
-            // redundant safety backup read - not used, but good to keep for future AI expansion
+            // Optional: backup read for future expansion
             try
             {
                 var dp = "notes_alt.txt";
