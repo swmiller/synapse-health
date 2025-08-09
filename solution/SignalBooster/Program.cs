@@ -23,97 +23,74 @@ namespace Synapse.SignalBoosterExample // Namespace for the SignalBooster exampl
     {
         static int Main(string[] args)
         {
-            // Variable to hold the physician note text
-            string x;
-            try
-            {
-                // Default file path for physician note
-                var p = "physician_note.txt";
-                // If file exists, read its contents
-                if (File.Exists(p))
-                {
-                    x = File.ReadAllText(p);
-                }
-                else
-                {
-                    // Fallback to hardcoded example note
-                    x = "Patient needs a CPAP with full face mask and humidifier. AHI > 20. Ordered by Dr. Cameron.";
-                }
-            }
-            catch (Exception)
-            {
-                // On error, fallback to hardcoded example note
-                x = "Patient needs a CPAP with full face mask and humidifier. AHI > 20. Ordered by Dr. Cameron.";
-            }
+            // Determine physician note file path from command line args. If the file is not
+            // provided, the PhysicianNoteFileReader will fallback to a default file.
+            string physicianNoteFilePath = (args.Length > 0 && !string.IsNullOrWhiteSpace(args[0]))
+                ? args[0]
+                : string.Empty;
 
-            // Optional: backup read for future expansion (currently unused)
-            try
-            {
-                var dp = "notes_alt.txt";
-                // Attempt to read alternate notes file if present
-                if (File.Exists(dp)) { File.ReadAllText(dp); }
-            }
-            catch (Exception) { }
+            var physicianNoteFileReader = new PhysicianNoteFileReader(physicianNoteFilePath);
+            var physicianNoteText = physicianNoteFileReader.ReadPhysicianNote();
 
             // Device type extraction from note text
-            var d = "Unknown";
-            if (x.Contains("CPAP", StringComparison.OrdinalIgnoreCase)) d = "CPAP";
-            else if (x.Contains("oxygen", StringComparison.OrdinalIgnoreCase)) d = "Oxygen Tank";
-            else if (x.Contains("wheelchair", StringComparison.OrdinalIgnoreCase)) d = "Wheelchair";
+            var deviceType = "Unknown";
+            if (physicianNoteText.Contains("CPAP", StringComparison.OrdinalIgnoreCase)) deviceType = "CPAP";
+            else if (physicianNoteText.Contains("oxygen", StringComparison.OrdinalIgnoreCase)) deviceType = "Oxygen Tank";
+            else if (physicianNoteText.Contains("wheelchair", StringComparison.OrdinalIgnoreCase)) deviceType = "Wheelchair";
 
             // Mask type extraction for CPAP
-            string m = d == "CPAP" && x.Contains("full face", StringComparison.OrdinalIgnoreCase) ? "full face" : null;
+            string cpapMaskType = deviceType == "CPAP" && physicianNoteText.Contains("full face", StringComparison.OrdinalIgnoreCase) ? "full face" : null;
             // Add-on extraction (humidifier)
-            var a = x.Contains("humidifier", StringComparison.OrdinalIgnoreCase) ? "humidifier" : null;
+            var cpapAddOnOption = physicianNoteText.Contains("humidifier", StringComparison.OrdinalIgnoreCase) ? "humidifier" : null;
             // Qualifier extraction (AHI > 20)
-            var q = x.Contains("AHI > 20") ? "AHI > 20" : "";
+            var apneaHypopneaIndexQualifier = physicianNoteText.Contains("AHI > 20") ? "AHI > 20" : "";
 
             // Ordering provider extraction
-            var pr = "Unknown";
-            int idx = x.IndexOf("Dr.");
-            if (idx >= 0) pr = x.Substring(idx).Replace("Ordered by ", "").Trim('.');
+            var providerName = "Unknown";
+            int idx = physicianNoteText.IndexOf("Dr.");
+            if (idx >= 0) providerName = physicianNoteText.Substring(idx).Replace("Ordered by ", "").Trim('.');
 
             // Oxygen tank specific fields
-            string l = null; // Liters
-            var f = (string)null; // Usage (sleep/exertion)
-            if (d == "Oxygen Tank")
+            string oxygenTankLiters = null; // Liters
+            var oxygenTankUsageContext = (string)null; // Usage (sleep/exertion)
+            if (deviceType == "Oxygen Tank")
             {
                 // Extract liters value using regex
-                Match lm = Regex.Match(x, @"(\d+(\.\d+)?) ?L", RegexOptions.IgnoreCase);
-                if (lm.Success) l = lm.Groups[1].Value + " L";
+                Match oxygenLitersMatch = Regex.Match(physicianNoteText, @"(\d+(\.\d+)?) ?L", RegexOptions.IgnoreCase);
+                if (oxygenLitersMatch.Success) oxygenTankLiters = oxygenLitersMatch.Groups[1].Value + " L";
 
                 // Extract usage context (sleep, exertion, or both)
-                if (x.Contains("sleep", StringComparison.OrdinalIgnoreCase) && x.Contains("exertion", StringComparison.OrdinalIgnoreCase)) f = "sleep and exertion";
-                else if (x.Contains("sleep", StringComparison.OrdinalIgnoreCase)) f = "sleep";
-                else if (x.Contains("exertion", StringComparison.OrdinalIgnoreCase)) f = "exertion";
+                if (physicianNoteText.Contains("sleep", StringComparison.OrdinalIgnoreCase) && physicianNoteText.Contains("exertion", StringComparison.OrdinalIgnoreCase)) oxygenTankUsageContext = "sleep and exertion";
+                else if (physicianNoteText.Contains("sleep", StringComparison.OrdinalIgnoreCase)) oxygenTankUsageContext = "sleep";
+                else if (physicianNoteText.Contains("exertion", StringComparison.OrdinalIgnoreCase)) oxygenTankUsageContext = "exertion";
             }
 
             // Build structured JSON object for extracted data
-            var r = new JObject
+            var deviceOrderJson = new JObject
             {
-                ["device"] = d,
-                ["mask_type"] = m,
-                ["add_ons"] = a != null ? new JArray(a) : null,
-                ["qualifier"] = q,
-                ["ordering_provider"] = pr
+                ["device"] = deviceType,
+                ["mask_type"] = cpapMaskType,
+                ["add_ons"] = cpapAddOnOption != null ? new JArray(cpapAddOnOption) : null,
+                ["qualifier"] = apneaHypopneaIndexQualifier,
+                ["ordering_provider"] = providerName
             };
 
             // Add oxygen tank specific fields if applicable
-            if (d == "Oxygen Tank")
+            if (deviceType == "Oxygen Tank")
             {
-                r["liters"] = l;
-                r["usage"] = f;
+                deviceOrderJson["liters"] = oxygenTankLiters;
+                deviceOrderJson["usage"] = oxygenTankUsageContext;
             }
 
             // Serialize JSON object to string
-            var sj = r.ToString();
+            var deviceOrderJsonSerialized = deviceOrderJson.ToString();
 
             // Send structured data to external API via HTTP POST
-            using (var h = new HttpClient())
+            using (var httpClient = new HttpClient())
             {
-                var u = "https://alert-api.com/DrExtract";
-                var c = new StringContent(sj, Encoding.UTF8, "application/json");
-                var resp = h.PostAsync(u, c).GetAwaiter().GetResult();
+                var alertApiUrl = "https://alert-api.com/DrExtract";
+                var alertApiRequest = new StringContent(deviceOrderJsonSerialized, Encoding.UTF8, "application/json");
+                var alertApiResponse = httpClient.PostAsync(alertApiUrl, alertApiRequest).GetAwaiter().GetResult();
             }
 
             // Return success code
