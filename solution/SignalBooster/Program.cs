@@ -64,6 +64,14 @@ namespace Synapse.SignalBoosterExample // Namespace for the SignalBooster exampl
                 {
                     // Register services here
                     services.AddHttpClient();
+
+                    // Register the PhysicianNoteFileReader and its interface
+                    services.AddTransient<IPhysicianNoteReader, PhysicianNoteFileReader>(sp =>
+                    {
+                        var logger = sp.GetRequiredService<ILogger<PhysicianNoteFileReader>>();
+                        var filePath = context.Configuration["PhysicianNote:FilePath"] ?? "physician_note.txt";
+                        return new PhysicianNoteFileReader(filePath, logger);
+                    });
                 })
                 .ConfigureLogging((hostContext, logging) =>
                 {
@@ -87,10 +95,14 @@ namespace Synapse.SignalBoosterExample // Namespace for the SignalBooster exampl
                 // Log the start of the application
                 logger.LogInformation("Signal Booster application starting");
 
-                // Add a simple async operation to make the async method valid
-                await Task.Delay(10); // Small delay to make the async method valid
+                // Get the IPhysicianNoteReader service from the DI container
+                var noteReader = host.Services.GetRequiredService<IPhysicianNoteReader>();
 
-                // Your application logic would go here
+                // Read the physician note
+                string noteContent = await noteReader.ReadPhysicianNoteAsync();
+                logger.LogInformation("Physician note content: {NoteLength} characters", noteContent.Length);
+
+                // More application logic would go here
 
                 logger.LogInformation("Signal Booster application completed successfully");
                 return 0;
