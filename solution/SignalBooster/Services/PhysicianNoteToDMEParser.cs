@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using Synapse.SignalBoosterExample.Interfaces;
 using static Synapse.SignalBoosterExample.SignalBoosterEnums;
 
-namespace Synapse.SignalBoosterExample
+namespace Synapse.SignalBoosterExample.Services
 {
     /// <summary>
     /// Parses physician notes to extract durable medical equipment (DME) information.
