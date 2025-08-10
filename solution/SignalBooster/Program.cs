@@ -74,7 +74,7 @@ namespace Synapse.SignalBoosterExample // Namespace for the SignalBooster exampl
                     });
 
                     // Register the PhysicianNoteToDMEParser
-                    services.AddTransient<PhysicianNoteToDMEParser>();
+                    services.AddTransient<IPhysicianNoteToDMEParser, PhysicianNoteToDMEParser>();
 
                     // Register the DmeApiClient
                     services.AddTransient<IDmeApiClient, DmeApiClient>(sp =>
@@ -115,7 +115,7 @@ namespace Synapse.SignalBoosterExample // Namespace for the SignalBooster exampl
                 logger.LogInformation("Physician note content: {NoteLength} characters", noteContent.Length);
 
                 // Parse the physician note to extract DME information
-                var dmeParser = host.Services.GetRequiredService<PhysicianNoteToDMEParser>();
+                var dmeParser = host.Services.GetRequiredService<IPhysicianNoteToDMEParser>();
                 var dmeData = await dmeParser.ParsePhysicianNoteAsync(noteContent);
                 logger.LogInformation("Extracted DME data for device type: {DeviceType}", dmeData.DeviceType);
 

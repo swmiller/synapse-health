@@ -9,7 +9,7 @@ namespace Synapse.SignalBoosterExample
     /// <summary>
     /// Parses physician notes to extract durable medical equipment (DME) information.
     /// </summary>
-    public class PhysicianNoteToDMEParser
+    public class PhysicianNoteToDMEParser : IPhysicianNoteToDMEParser
     {
         private readonly ILogger<PhysicianNoteToDMEParser> _logger;
 
