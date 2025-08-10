@@ -77,7 +77,7 @@ namespace Synapse.SignalBoosterExample // Namespace for the SignalBooster exampl
                     services.AddTransient<PhysicianNoteToDMEParser>();
 
                     // Register the DmeApiClient
-                    services.AddTransient<DmeApiClient>(sp =>
+                    services.AddTransient<IDmeApiClient, DmeApiClient>(sp =>
                     {
                         var logger = sp.GetRequiredService<ILogger<DmeApiClient>>();
                         var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient();
@@ -120,7 +120,7 @@ namespace Synapse.SignalBoosterExample // Namespace for the SignalBooster exampl
                 logger.LogInformation("Extracted DME data for device type: {DeviceType}", dmeData.DeviceType);
 
                 // Transmit the extracted DME data to the external API
-                var apiClient = host.Services.GetRequiredService<DmeApiClient>();
+                var apiClient = host.Services.GetRequiredService<IDmeApiClient>();
                 int statusCode = await apiClient.TransmitDmeObjectAsync(dmeData);
 
                 if (statusCode >= 200 && statusCode < 300)

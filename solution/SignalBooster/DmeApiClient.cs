@@ -10,7 +10,7 @@ namespace Synapse.SignalBoosterExample
     /// <summary>
     /// Handles communication with external APIs for DME-related data.
     /// </summary>
-    public class DmeApiClient : IDisposable
+    public class DmeApiClient : IDmeApiClient
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<DmeApiClient> _logger;
