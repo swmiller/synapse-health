@@ -53,12 +53,24 @@ public class DurableMedicalEquipmentTests
         var jObject = dme.ToJObject();
 
         // Assert
-        Assert.Equal("CPAP", jObject["device"].ToString());
-        Assert.Equal("Dr. Smith", jObject["ordering_provider"].ToString());
-        Assert.Equal("FullFace", jObject["mask_type"].ToString());
-        Assert.Equal("Humidifier", jObject["add_ons"][0].ToString());
-        Assert.Equal("AHI > 15.5", jObject["qualifier"].ToString());
-        Assert.Equal("2025-08-10T10:00:00.0000000Z", jObject["processed_timestamp"].ToString());
+        Assert.NotNull(jObject["device"]);
+        Assert.Equal("CPAP", jObject["device"]?.ToString());
+        Assert.NotNull(jObject["ordering_provider"]);
+        Assert.Equal("Dr. Smith", jObject["ordering_provider"]?.ToString());
+        Assert.NotNull(jObject["mask_type"]);
+        Assert.Equal("FullFace", jObject["mask_type"]?.ToString());
+        Assert.NotNull(jObject["add_ons"]);
+
+        // Check array has items before accessing elements
+        var addOns = jObject["add_ons"] as JArray;
+        Assert.NotNull(addOns);
+        Assert.NotEmpty(addOns);
+        Assert.Equal("Humidifier", addOns[0]?.ToString());
+
+        Assert.NotNull(jObject["qualifier"]);
+        Assert.Equal("AHI > 15.5", jObject["qualifier"]?.ToString());
+        Assert.NotNull(jObject["processed_timestamp"]);
+        Assert.Equal("2025-08-10T10:00:00.0000000Z", jObject["processed_timestamp"]?.ToString());
     }
 
     [Fact]
@@ -78,10 +90,15 @@ public class DurableMedicalEquipmentTests
         var jObject = dme.ToJObject();
 
         // Assert
-        Assert.Equal("OxygenTank", jObject["device"].ToString());
-        Assert.Equal("Dr. Johnson", jObject["ordering_provider"].ToString());
-        Assert.Equal("5 L", jObject["liters"].ToString());
-        Assert.Equal("sleep and exertion", jObject["usage"].ToString());
-        Assert.Equal("2025-08-10T10:00:00.0000000Z", jObject["processed_timestamp"].ToString());
+        Assert.NotNull(jObject["device"]);
+        Assert.Equal("OxygenTank", jObject["device"]?.ToString());
+        Assert.NotNull(jObject["ordering_provider"]);
+        Assert.Equal("Dr. Johnson", jObject["ordering_provider"]?.ToString());
+        Assert.NotNull(jObject["liters"]);
+        Assert.Equal("5 L", jObject["liters"]?.ToString());
+        Assert.NotNull(jObject["usage"]);
+        Assert.Equal("sleep and exertion", jObject["usage"]?.ToString());
+        Assert.NotNull(jObject["processed_timestamp"]);
+        Assert.Equal("2025-08-10T10:00:00.0000000Z", jObject["processed_timestamp"]?.ToString());
     }
 }
