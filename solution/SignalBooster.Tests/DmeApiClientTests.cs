@@ -1,6 +1,6 @@
 ﻿namespace SignalBooster.Tests;
 
-public class UnitTest1
+public class DmeApiClientTests
 {
     [Fact]
     public void Test1()
