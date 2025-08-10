@@ -75,6 +75,15 @@ namespace Synapse.SignalBoosterExample // Namespace for the SignalBooster exampl
 
                     // Register the PhysicianNoteToDMEParser
                     services.AddTransient<PhysicianNoteToDMEParser>();
+
+                    // Register the DmeApiClient
+                    services.AddTransient<DmeApiClient>(sp =>
+                    {
+                        var logger = sp.GetRequiredService<ILogger<DmeApiClient>>();
+                        var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient();
+                        var apiUrl = context.Configuration["ApiSettings:BaseUrl"] ?? "https://alert-api.com";
+                        return new DmeApiClient(apiUrl, httpClient, logger);
+                    });
                 })
                 .ConfigureLogging((hostContext, logging) =>
                 {
@@ -110,7 +119,18 @@ namespace Synapse.SignalBoosterExample // Namespace for the SignalBooster exampl
                 var dmeData = await dmeParser.ParsePhysicianNoteAsync(noteContent);
                 logger.LogInformation("Extracted DME data for device type: {DeviceType}", dmeData.DeviceType);
 
-                // More application logic would go here
+                // Transmit the extracted DME data to the external API
+                var apiClient = host.Services.GetRequiredService<DmeApiClient>();
+                int statusCode = await apiClient.TransmitDmeObjectAsync(dmeData);
+
+                if (statusCode >= 200 && statusCode < 300)
+                {
+                    logger.LogInformation("Successfully transmitted DME data to API with status code: {StatusCode}", statusCode);
+                }
+                else
+                {
+                    logger.LogWarning("API returned non-success status code: {StatusCode}", statusCode);
+                }
 
                 logger.LogInformation("Signal Booster application completed successfully");
                 return 0;
