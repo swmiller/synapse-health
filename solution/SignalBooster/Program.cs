@@ -48,6 +48,8 @@ using Microsoft.Extensions.Hosting;
 // For HttpClient factory
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Http;
+// Interface references
+using Synapse.SignalBoosterExample.Interfaces;
 
 namespace Synapse.SignalBoosterExample // Namespace for the SignalBooster example
 {

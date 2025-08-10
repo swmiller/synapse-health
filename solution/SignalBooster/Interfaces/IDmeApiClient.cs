@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Synapse.SignalBoosterExample
+namespace Synapse.SignalBoosterExample.Interfaces
 {
     /// <summary>
     /// Defines operations for communicating with external APIs for DME-related data.

@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Synapse.SignalBoosterExample
+namespace Synapse.SignalBoosterExample.Interfaces
 {
     /// <summary>
     /// Defines methods for reading physician note files.

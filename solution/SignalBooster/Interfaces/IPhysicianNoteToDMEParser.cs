@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Synapse.SignalBoosterExample
+namespace Synapse.SignalBoosterExample.Interfaces
 {
     /// <summary>
     /// Interface for parsing physician notes to extract durable medical equipment (DME) information.
