@@ -82,6 +82,12 @@ namespace Synapse.SignalBoosterExample // Namespace for the SignalBooster exampl
                 {
                     logger.LogInformation("Successfully transmitted DME data to API with status code: {StatusCode}", statusCode);
                 }
+                else if (statusCode == (int)System.Net.HttpStatusCode.ServiceUnavailable)
+                {
+                    // Handle connection failures to fake URL gracefully
+                    logger.LogWarning("Unable to connect to API endpoint (expected for fake URLs). Status code: {StatusCode}", statusCode);
+                    // Continue execution - the program should not crash due to this expected issue
+                }
                 else
                 {
                     logger.LogWarning("API returned non-success status code: {StatusCode}", statusCode);

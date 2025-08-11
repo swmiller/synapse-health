@@ -74,6 +74,12 @@ namespace Synapse.SignalBoosterExample.Services
 
                 return statusCode;
             }
+            catch (HttpRequestException ex) when (ex.Message.Contains("connection") || ex.Message.Contains("respond"))
+            {
+                // Specifically handle connection issues (like the one mentioned in the error)
+                _logger.LogError(ex, "Connection failed to DME API endpoint. This is expected in test environments with fake URLs.");
+                return (int)HttpStatusCode.ServiceUnavailable; // 503 Service Unavailable
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error transmitting DME data to API");
@@ -114,6 +120,12 @@ namespace Synapse.SignalBoosterExample.Services
                 }
 
                 return statusCode;
+            }
+            catch (HttpRequestException ex) when (ex.Message.Contains("connection") || ex.Message.Contains("respond"))
+            {
+                // Specifically handle connection issues (like the one mentioned in the error)
+                _logger.LogError(ex, "Connection failed to DME API endpoint. This is expected in test environments with fake URLs.");
+                return (int)HttpStatusCode.ServiceUnavailable; // 503 Service Unavailable
             }
             catch (Exception ex)
             {
