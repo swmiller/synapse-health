@@ -1,6 +1,4 @@
-using System;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Synapse.SignalBoosterExample.Interfaces;
 using static Synapse.SignalBoosterExample.SignalBoosterEnums;

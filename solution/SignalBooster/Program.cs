@@ -1,54 +1,6 @@
-﻿// // Import basic system types
-// using System;
-// // For file reading
-// using System.IO;
-// // For HTTP requests
-// using System.Net.Http;
-// // For encoding
-// using System.Text;
-// // For async support (not used here)
-// using System.Threading.Tasks;
-// // For regex matching
-// using System.Text.RegularExpressions;
-// // For JSON object construction
-// using Newtonsoft.Json.Linq;
-
-// namespace Synapse.SignalBoosterExample // Namespace for the SignalBooster example
-// {
-
-//     /// <summary>
-//     /// Reads a physician note, extracts DME device information, and posts structured data to an external API.
-//     /// </summary>
-//     class Program
-//     {
-//         static int Main(string[] args)
-//         {
-//             return 0;
-//         }
-//     }
-// }
-// Import basic system types
-using System;
-// For file reading
-using System.IO;
-// For HTTP requests
-using System.Net.Http;
-// For encoding
-using System.Text;
-// For async support
-using System.Threading.Tasks;
-// For regex matching
-using System.Text.RegularExpressions;
-// For JSON object construction
-using Newtonsoft.Json.Linq;
-// For dependency injection and logging
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
-// For HttpClient factory
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Http;
-// Interface and service references
 using Synapse.SignalBoosterExample.Interfaces;
 using Synapse.SignalBoosterExample.Services;
 
