@@ -45,6 +45,16 @@ namespace Synapse.SignalBoosterExample.Services
             dmeData.DeviceType = DetermineDeviceType(physicianNote);
             _logger.LogInformation("Identified device type: {DeviceType}", dmeData.DeviceType);
 
+            // Extract patient information
+            dmeData.PatientName = ExtractPatientName(physicianNote);
+            _logger.LogInformation("Extracted patient name: {PatientName}", dmeData.PatientName);
+
+            dmeData.DateOfBirth = ExtractDateOfBirth(physicianNote);
+            _logger.LogInformation("Extracted date of birth: {DateOfBirth}", dmeData.DateOfBirth);
+
+            dmeData.Diagnosis = ExtractDiagnosis(physicianNote);
+            _logger.LogInformation("Extracted diagnosis: {Diagnosis}", dmeData.Diagnosis);
+
             // Determine the mask type for CPAP devices
             dmeData.MaskType = DetermineCpapMaskType(physicianNote, dmeData.DeviceType);
             _logger.LogInformation("Identified mask type: {MaskType}", dmeData.MaskType);
@@ -73,9 +83,6 @@ namespace Synapse.SignalBoosterExample.Services
                 _logger.LogInformation("Identified oxygen tank usage context: {Context}", dmeData.OxygenUsageContext);
             }
 
-            // TODO: Implement additional parsing logic to extract more DME information
-            // - Extracting any additional notes or qualifiers
-
             _logger.LogInformation("Successfully parsed physician note, identified device type: {DeviceType}", dmeData.DeviceType);
 
             return dmeData;
@@ -102,14 +109,24 @@ namespace Synapse.SignalBoosterExample.Services
         {
             _logger.LogDebug("Determining device type from physician note");
 
-            // Using pattern matching to determine the device type instead of multiple if statements
-            return physicianNoteText.ToUpperInvariant() switch
+            // First, check for exact device type names in the note
+            if (physicianNoteText.Contains("CPAP", StringComparison.OrdinalIgnoreCase))
             {
-                var note when note.Contains("CPAP") => DeviceType.CPAP,
-                var note when note.Contains("OXYGEN", StringComparison.OrdinalIgnoreCase) => DeviceType.OxygenTank,
-                var note when note.Contains("WHEELCHAIR", StringComparison.OrdinalIgnoreCase) => DeviceType.Wheelchair,
-                _ => DeviceType.Unknown
-            };
+                return DeviceType.CPAP;
+            }
+
+            if (physicianNoteText.Contains("oxygen tank", StringComparison.OrdinalIgnoreCase) ||
+                physicianNoteText.Contains("oxygen", StringComparison.OrdinalIgnoreCase))
+            {
+                return DeviceType.OxygenTank;
+            }
+
+            if (physicianNoteText.Contains("wheelchair", StringComparison.OrdinalIgnoreCase))
+            {
+                return DeviceType.Wheelchair;
+            }
+
+            return DeviceType.Unknown;
         }
 
         /// <summary>
@@ -232,6 +249,75 @@ namespace Synapse.SignalBoosterExample.Services
                 (false, true) => OxygenTankUsageContext.Exertion,
                 _ => OxygenTankUsageContext.None
             };
+        }
+
+        /// <summary>
+        /// Extracts the patient name from the physician note.
+        /// </summary>
+        /// <param name="physicianNoteText">The text of the physician note to analyze.</param>
+        /// <returns>The extracted patient name or empty string if not found.</returns>
+        private string ExtractPatientName(string physicianNoteText)
+        {
+            _logger.LogDebug("Extracting patient name from physician note");
+
+            // Look for a line that starts with "Patient Name:" or similar
+            var match = System.Text.RegularExpressions.Regex.Match(
+                physicianNoteText,
+                @"Patient\s+Name:?\s*(.+?)(?:\r?\n|$)",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+            if (match.Success)
+            {
+                return match.Groups[1].Value.Trim();
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Extracts the date of birth from the physician note.
+        /// </summary>
+        /// <param name="physicianNoteText">The text of the physician note to analyze.</param>
+        /// <returns>The extracted date of birth or empty string if not found.</returns>
+        private string ExtractDateOfBirth(string physicianNoteText)
+        {
+            _logger.LogDebug("Extracting date of birth from physician note");
+
+            // Look for a line that starts with "DOB:" or similar
+            var match = System.Text.RegularExpressions.Regex.Match(
+                physicianNoteText,
+                @"(?:DOB|Date\s+of\s+Birth):?\s*(.+?)(?:\r?\n|$)",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+            if (match.Success)
+            {
+                return match.Groups[1].Value.Trim();
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Extracts the diagnosis from the physician note.
+        /// </summary>
+        /// <param name="physicianNoteText">The text of the physician note to analyze.</param>
+        /// <returns>The extracted diagnosis or empty string if not found.</returns>
+        private string ExtractDiagnosis(string physicianNoteText)
+        {
+            _logger.LogDebug("Extracting diagnosis from physician note");
+
+            // Look for a line that starts with "Diagnosis:" or similar
+            var match = System.Text.RegularExpressions.Regex.Match(
+                physicianNoteText,
+                @"Diagnosis:?\s*(.+?)(?:\r?\n|$)",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+            if (match.Success)
+            {
+                return match.Groups[1].Value.Trim();
+            }
+
+            return string.Empty;
         }
     }
 }

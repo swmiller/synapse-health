@@ -52,6 +52,21 @@ namespace Synapse.SignalBoosterExample
         public string AdditionalNotes { get; set; }
 
         /// <summary>
+        /// The patient's name from the physician note.
+        /// </summary>
+        public string PatientName { get; set; }
+
+        /// <summary>
+        /// The patient's date of birth from the physician note.
+        /// </summary>
+        public string DateOfBirth { get; set; }
+
+        /// <summary>
+        /// The diagnosis from the physician note.
+        /// </summary>
+        public string Diagnosis { get; set; }
+
+        /// <summary>
         /// The timestamp when this DME data was extracted.
         /// </summary>
         public DateTime ProcessedTimestamp { get; set; }
@@ -69,6 +84,11 @@ namespace Synapse.SignalBoosterExample
             OxygenUsageContext = OxygenTankUsageContext.None;
             AdditionalNotes = string.Empty;
             ProcessedTimestamp = DateTime.UtcNow;
+
+            // Initialize the new properties
+            PatientName = string.Empty;
+            DateOfBirth = string.Empty;
+            Diagnosis = string.Empty;
         }
 
         /// <summary>
@@ -90,9 +110,25 @@ namespace Synapse.SignalBoosterExample
             var jObject = new JObject
             {
                 // Common properties for all device types
-                ["device"] = DeviceType.ToString(),
                 ["ordering_provider"] = OrderingProvider
             };
+
+            // Add the device type with the correct formatting
+            switch (DeviceType)
+            {
+                case DeviceType.CPAP:
+                    jObject["device"] = "CPAP";
+                    break;
+                case DeviceType.OxygenTank:
+                    jObject["device"] = "Oxygen Tank";
+                    break;
+                case DeviceType.Wheelchair:
+                    jObject["device"] = "Wheelchair";
+                    break;
+                default:
+                    jObject["device"] = DeviceType.ToString();
+                    break;
+            }
 
             // Add device-specific properties based on the device type
             switch (DeviceType)
@@ -165,6 +201,22 @@ namespace Synapse.SignalBoosterExample
 
             // Add additional properties that weren't in the original but are useful
             jObject["processed_timestamp"] = ProcessedTimestamp.ToString("o"); // ISO 8601 format
+
+            // Add patient information if available
+            if (!string.IsNullOrEmpty(PatientName))
+            {
+                jObject["patient_name"] = PatientName;
+            }
+
+            if (!string.IsNullOrEmpty(DateOfBirth))
+            {
+                jObject["dob"] = DateOfBirth;
+            }
+
+            if (!string.IsNullOrEmpty(Diagnosis))
+            {
+                jObject["diagnosis"] = Diagnosis;
+            }
 
             if (!string.IsNullOrEmpty(AdditionalNotes))
             {

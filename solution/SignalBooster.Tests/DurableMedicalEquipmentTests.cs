@@ -91,7 +91,7 @@ public class DurableMedicalEquipmentTests
 
         // Assert
         Assert.NotNull(jObject["device"]);
-        Assert.Equal("OxygenTank", jObject["device"]?.ToString());
+        Assert.Equal("Oxygen Tank", jObject["device"]?.ToString());
         Assert.NotNull(jObject["ordering_provider"]);
         Assert.Equal("Dr. Johnson", jObject["ordering_provider"]?.ToString());
         Assert.NotNull(jObject["liters"]);
