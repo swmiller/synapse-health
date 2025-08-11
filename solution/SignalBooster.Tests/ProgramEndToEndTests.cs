@@ -1,21 +1,13 @@
-using System;
 using System.Net;
-using System.Net.Http;
-using System.Text;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using Newtonsoft.Json.Linq;
-using Synapse.SignalBoosterExample;
 using Synapse.SignalBoosterExample.Interfaces;
 using Synapse.SignalBoosterExample.Services;
-using Xunit;
 using static Synapse.SignalBoosterExample.SignalBoosterEnums;
 
 namespace SignalBooster.Tests
