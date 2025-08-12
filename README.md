@@ -13,7 +13,7 @@ SignalBooster is a utility that processes physician notes to extract information
 
 ### AI Development Tools
 - **GitHub Copilot**: Used for code completion, documentation generation, and test case development
-- **GitHub Copilot Chat**: Used for code review and refactoring suggestions
+- **GitHub Copilot Chat/Agent**: Used for code review and refactoring suggestions
 
 ## Project Structure
 The solution follows a clean architecture approach with clear separation of concerns:
